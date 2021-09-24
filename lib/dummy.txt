@@ -1,0 +1,768 @@
+ ListView(
+          key: PageStorageKey("tv_index1"),
+          controller: mainTvPageController,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(
+                top: 10.0,
+                left: 10.0,
+                bottom: 10.0,
+                right: 15.0,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  AnimatedBuilder(
+                    animation: mainPageTextEntryAnimationController,
+                    builder: (context, wdiget) {
+                      return Text(
+                        "Most Popular",
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          decoration: TextDecoration.none,
+                          fontSize: 18,
+                          fontFamily: 'ConcertOne-Regular',
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.3,
+                          color: Colors.black.withOpacity(
+                              mainPageTextEntryAnimationController.value),
+                        ),
+                      );
+                    },
+                  ),
+                  Expanded(
+                    child: Container(
+                      margin: EdgeInsets.only(top: 10.0),
+                      child: Text(
+                        "View more >",
+                        textAlign: TextAlign.end,
+                        style: TextStyle(
+                          decoration: TextDecoration.none,
+                          fontSize: 14,
+                          fontFamily: 'ConcertOne-Regular',
+                          fontWeight: FontWeight.w100,
+                          color: Colors.white.withOpacity(0.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            tvShowPopularList == null || tvShowPopularList.length == 0
+                ? Container(
+                    height: 200,
+                    color: Colors.transparent,
+                    child: Center(
+                      child: LoadingBarIndicator(
+                        numberOfBars: 5,
+                        colors: _colors,
+                        barSpacing: 5.0,
+                        beginTweenValue: 10.0,
+                        endTweenValue: 15.0,
+                      ),
+                    ),
+                  )
+                : AnimatedBuilder(
+                    animation: listItemEntryAnimationController,
+                    builder: (context, widget) {
+                      return Opacity(
+                        opacity: listItemEntryAnimationController.value,
+                        child: Transform(
+                          transform: Matrix4.identity()
+                            ..setEntry(
+                                3,
+                                0,
+                                0.006 *
+                                    (1 -
+                                        listItemEntryAnimationController
+                                            .value)),
+                          child: Transform.translate(
+                            offset: Offset(
+                                screenWidth *
+                                    (1 -
+                                        listItemEntryAnimationController.value),
+                                0.0),
+                            child: Container(
+                              height: 260,
+                              color: Colors.transparent,
+                              child: PageStorage(
+                                bucket: storageBucket,
+                                child: PageView.builder(
+                                  key: PageStorageKey("index1_most_popular"),
+                                  controller: popularPageController,
+                                  scrollDirection: Axis.horizontal,
+                                  physics: BouncingScrollPhysics(),
+                                  onPageChanged: (index) {
+                                    popularListItemTextEntryAnimationController
+                                        .reset();
+                                    popularListItemTextEntryAnimationController
+                                        .forward();
+                                  },
+                                  itemBuilder: (context, index) {
+                                    if (tvShowPopularList[index] != null) {
+                                      if (index == popularCurrentPage.floor()) {
+                                        frontPopularListItemChangeAnimationController
+                                                .value =
+                                            (popularCurrentPage - index);
+
+                                        return Transform.scale(
+                                          scale:
+                                              frontPopularListItemChangeAnimation
+                                                  .value,
+                                          child: buildTvShowMainListItems(
+                                            tvShowPopularList[index].id,
+                                            tvShowPopularList[index]
+                                                .backdrop_path,
+                                            tvShowPopularList[index].name,
+                                            tvShowPopularList[index]
+                                                .first_air_date
+                                                .toString(),
+                                            tvShowPopularList[index]
+                                                .vote_average,
+                                            tvShowPopularList[index].vote_count,
+                                            popularListItemTextEntryAnimationController,
+                                          ),
+                                        );
+                                      } else if (index ==
+                                          popularCurrentPage.floor() + 1) {
+                                        backPopularListItemChangeAnimationController
+                                                .value =
+                                            1 - (index - popularCurrentPage);
+                                        return Opacity(
+                                          opacity:
+                                              backPopularListItemChangeAnimation
+                                                  .value,
+                                          child: Transform.scale(
+                                            scale:
+                                                backPopularListItemChangeAnimation
+                                                    .value,
+                                            child: buildTvShowMainListItems(
+                                              tvShowPopularList[index].id,
+                                              tvShowPopularList[index]
+                                                  .backdrop_path,
+                                              tvShowPopularList[index].name,
+                                              tvShowPopularList[index]
+                                                  .first_air_date
+                                                  .toString(),
+                                              tvShowPopularList[index]
+                                                  .vote_average,
+                                              tvShowPopularList[index]
+                                                  .vote_count,
+                                              popularListItemTextEntryAnimationController,
+                                            ),
+                                          ),
+                                        );
+                                      } else {
+                                        return Transform.scale(
+                                          scale: 0.75,
+                                          child: buildTvShowMainListItems(
+                                            tvShowPopularList[index].id,
+                                            tvShowPopularList[index]
+                                                .backdrop_path,
+                                            tvShowPopularList[index].name,
+                                            tvShowPopularList[index]
+                                                .first_air_date
+                                                .toString(),
+                                            tvShowPopularList[index]
+                                                .vote_average,
+                                            tvShowPopularList[index].vote_count,
+                                            popularListItemTextEntryAnimationController,
+                                          ),
+                                        );
+                                      }
+                                    } else {
+                                      return Container();
+                                    }
+                                  },
+                                  itemCount: tvShowPopularList.length,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+            Container(
+              height: 1.0,
+              margin: EdgeInsets.only(bottom: 10.0),
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black,
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                top: 10.0,
+                left: 10.0,
+                bottom: 10.0,
+                right: 15.0,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  AnimatedBuilder(
+                    animation: mainPageTextEntryAnimationController,
+                    builder: (context, wdiget) {
+                      return Text(
+                        "Most Anticipated",
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          decoration: TextDecoration.none,
+                          fontSize: 18,
+                          fontFamily: 'ConcertOne-Regular',
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.3,
+                          color: Colors.black.withOpacity(
+                              mainPageTextEntryAnimationController.value),
+                        ),
+                      );
+                    },
+                  ),
+                  Expanded(
+                    child: Container(
+                      margin: EdgeInsets.only(top: 10.0),
+                      child: Text(
+                        "View more >",
+                        textAlign: TextAlign.end,
+                        style: TextStyle(
+                          decoration: TextDecoration.none,
+                          fontSize: 14,
+                          fontFamily: 'ConcertOne-Regular',
+                          fontWeight: FontWeight.w100,
+                          color: Colors.white.withOpacity(0.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            tvShowTopRatedList == null || tvShowTopRatedList.length == 0
+                ? Container(
+                    height: 200,
+                    color: Colors.transparent,
+                    child: Center(
+                      child: LoadingBarIndicator(
+                        numberOfBars: 5,
+                        colors: _colors,
+                        barSpacing: 5.0,
+                        beginTweenValue: 10.0,
+                        endTweenValue: 15.0,
+                      ),
+                    ),
+                  )
+                : AnimatedBuilder(
+                    animation: listItemEntryAnimationController,
+                    builder: (context, widget) {
+                      return Opacity(
+                        opacity: listItemEntryAnimationController.value,
+                        child: Transform(
+                          transform: Matrix4.identity()
+                            ..setEntry(
+                                3,
+                                0,
+                                0.006 *
+                                    (1 -
+                                        listItemEntryAnimationController
+                                            .value)),
+                          child: Transform.translate(
+                            offset: Offset(
+                                screenWidth *
+                                    (1 -
+                                        listItemEntryAnimationController.value),
+                                0.0),
+                            child: Container(
+                              height: 260,
+                              color: Colors.transparent,
+                              child: PageStorage(
+                                bucket: storageBucket,
+                                child: PageView.builder(
+                                  key: PageStorageKey("index1_top_rated"),
+                                  controller: topRatedPageController,
+                                  scrollDirection: Axis.horizontal,
+                                  physics: BouncingScrollPhysics(),
+                                  onPageChanged: (index) {
+                                    topRatedListItemTextEntryAnimationController
+                                        .reset();
+                                    topRatedListItemTextEntryAnimationController
+                                        .forward();
+                                  },
+                                  itemBuilder: (context, index) {
+                                    if (index == topRatedCurrentPage.floor()) {
+                                      frontAnticipatedListItemChangeAnimationController
+                                              .value =
+                                          (topRatedCurrentPage - index);
+
+                                      return Transform.scale(
+                                        scale:
+                                            frontAnticipatedListItemChangeAnimation
+                                                .value,
+                                        child: buildTvShowMainListItems(
+                                          tvShowTopRatedList[index].id,
+                                          tvShowTopRatedList[index]
+                                              .backdrop_path,
+                                          tvShowTopRatedList[index].name,
+                                          tvShowTopRatedList[index]
+                                              .first_air_date
+                                              .toString(),
+                                          tvShowTopRatedList[index]
+                                              .vote_average,
+                                          tvShowTopRatedList[index].vote_count,
+                                          topRatedListItemTextEntryAnimationController,
+                                        ),
+                                      );
+                                    } else if (index ==
+                                        topRatedCurrentPage.floor() + 1) {
+                                      backAnticipatedListItemChangeAnimationController
+                                              .value =
+                                          1 - (index - topRatedCurrentPage);
+
+                                      return Opacity(
+                                        opacity:
+                                            backAnticipatedListItemChangeAnimation
+                                                .value,
+                                        child: Transform.scale(
+                                          scale:
+                                              backAnticipatedListItemChangeAnimation
+                                                  .value,
+                                          child: buildTvShowMainListItems(
+                                            tvShowTopRatedList[index].id,
+                                            tvShowTopRatedList[index]
+                                                .backdrop_path,
+                                            tvShowTopRatedList[index].name,
+                                            tvShowTopRatedList[index]
+                                                .first_air_date
+                                                .toString(),
+                                            tvShowTopRatedList[index]
+                                                .vote_average,
+                                            tvShowTopRatedList[index]
+                                                .vote_count,
+                                            topRatedListItemTextEntryAnimationController,
+                                          ),
+                                        ),
+                                      );
+                                    } else {
+                                      return Transform.scale(
+                                        scale: 0.75,
+                                        child: buildTvShowMainListItems(
+                                          tvShowTopRatedList[index].id,
+                                          tvShowTopRatedList[index]
+                                              .backdrop_path,
+                                          tvShowTopRatedList[index].name,
+                                          tvShowTopRatedList[index]
+                                              .first_air_date
+                                              .toString(),
+                                          tvShowTopRatedList[index]
+                                              .vote_average,
+                                          tvShowTopRatedList[index].vote_count,
+                                          topRatedListItemTextEntryAnimationController,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  itemCount: tvShowTopRatedList.length,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+            Container(
+              height: 1.0,
+              margin: EdgeInsets.only(bottom: 10.0),
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black,
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                top: 10.0,
+                left: 10.0,
+                bottom: 10.0,
+                right: 15.0,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  AnimatedBuilder(
+                    animation: mainPageTextEntryAnimationController,
+                    builder: (context, wdiget) {
+                      return Text(
+                        "Upcoming",
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          decoration: TextDecoration.none,
+                          fontSize: 18,
+                          fontFamily: 'ConcertOne-Regular',
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.3,
+                          color: Colors.black.withOpacity(
+                              mainPageTextEntryAnimationController.value),
+                        ),
+                      );
+                    },
+                  ),
+                  Expanded(
+                    child: Container(
+                      margin: EdgeInsets.only(top: 10.0),
+                      child: Text(
+                        "View more >",
+                        textAlign: TextAlign.end,
+                        style: TextStyle(
+                          decoration: TextDecoration.none,
+                          fontSize: 14,
+                          fontFamily: 'ConcertOne-Regular',
+                          fontWeight: FontWeight.w100,
+                          color: Colors.white.withOpacity(0.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            tvShowReleasingTodayList == null ||
+                    tvShowReleasingTodayList.length == 0
+                ? Container(
+                    height: 200,
+                    color: Colors.transparent,
+                    child: Center(
+                      child: LoadingBarIndicator(
+                        numberOfBars: 5,
+                        colors: _colors,
+                        barSpacing: 5.0,
+                        beginTweenValue: 10.0,
+                        endTweenValue: 15.0,
+                      ),
+                    ),
+                  )
+                : AnimatedBuilder(
+                    animation: listItemEntryAnimationController,
+                    builder: (context, widget) {
+                      return Opacity(
+                        opacity: listItemEntryAnimationController.value,
+                        child: Transform(
+                          transform: Matrix4.identity()
+                            ..setEntry(
+                                3,
+                                0,
+                                0.006 *
+                                    (1 -
+                                        listItemEntryAnimationController
+                                            .value)),
+                          child: Transform.translate(
+                            offset: Offset(
+                                screenWidth *
+                                    (1 -
+                                        listItemEntryAnimationController.value),
+                                0.0),
+                            child: Container(
+                              height: 250,
+                              color: Colors.white,
+                              child: PageStorage(
+                                bucket: storageBucket,
+                                child: PageView.builder(
+                                  key: PageStorageKey("index1_releasing_today"),
+                                  controller: releasingTodayPageController,
+                                  scrollDirection: Axis.horizontal,
+                                  physics: BouncingScrollPhysics(),
+                                  onPageChanged: (index) {
+                                    releasingTodayListItemTextEntryAnimationController
+                                        .reset();
+                                    releasingTodayListItemTextEntryAnimationController
+                                        .forward();
+                                  },
+                                  itemBuilder: (context, index) {
+                                    if (index ==
+                                        releasingTodayCurrentPage.floor()) {
+                                      frontUpcomingListItemChangeAnimationController
+                                              .value =
+                                          (releasingTodayCurrentPage - index);
+
+                                      return Transform.scale(
+                                        scale:
+                                            frontUpcomingListItemChangeAnimation
+                                                .value,
+                                        child: buildTvShowMainListItems(
+                                          tvShowReleasingTodayList[index].id,
+                                          tvShowReleasingTodayList[index]
+                                              .backdrop_path,
+                                          tvShowReleasingTodayList[index].name,
+                                          tvShowReleasingTodayList[index]
+                                              .first_air_date
+                                              .toString(),
+                                          tvShowReleasingTodayList[index]
+                                              .vote_average,
+                                          tvShowReleasingTodayList[index]
+                                              .vote_count,
+                                          releasingTodayListItemTextEntryAnimationController,
+                                        ),
+                                      );
+                                    } else if (index ==
+                                        releasingTodayCurrentPage.floor() + 1) {
+                                      backUpcomingListItemChangeAnimationController
+                                              .value =
+                                          1 -
+                                              (index -
+                                                  releasingTodayCurrentPage);
+
+                                      return Opacity(
+                                        opacity:
+                                            backUpcomingListItemChangeAnimation
+                                                .value,
+                                        child: Transform.scale(
+                                          scale:
+                                              backUpcomingListItemChangeAnimation
+                                                  .value,
+                                          child: buildTvShowMainListItems(
+                                            tvShowReleasingTodayList[index].id,
+                                            tvShowReleasingTodayList[index]
+                                                .backdrop_path,
+                                            tvShowReleasingTodayList[index]
+                                                .name,
+                                            tvShowReleasingTodayList[index]
+                                                .first_air_date
+                                                .toString(),
+                                            tvShowReleasingTodayList[index]
+                                                .vote_average,
+                                            tvShowReleasingTodayList[index]
+                                                .vote_count,
+                                            releasingTodayListItemTextEntryAnimationController,
+                                          ),
+                                        ),
+                                      );
+                                    } else {
+                                      return Transform.scale(
+                                        scale: 0.75,
+                                        child: buildTvShowMainListItems(
+                                          tvShowReleasingTodayList[index].id,
+                                          tvShowReleasingTodayList[index]
+                                              .backdrop_path,
+                                          tvShowReleasingTodayList[index].name,
+                                          tvShowReleasingTodayList[index]
+                                              .first_air_date
+                                              .toString(),
+                                          tvShowReleasingTodayList[index]
+                                              .vote_average,
+                                          tvShowReleasingTodayList[index]
+                                              .vote_count,
+                                          releasingTodayListItemTextEntryAnimationController,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  itemCount: tvShowReleasingTodayList.length,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+            Container(
+              height: 1.0,
+              margin: EdgeInsets.only(bottom: 10.0),
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black,
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                top: 10.0,
+                left: 10.0,
+                bottom: 10.0,
+                right: 15.0,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  AnimatedBuilder(
+                    animation: mainPageTextEntryAnimationController,
+                    builder: (context, wdiget) {
+                      return Text(
+                        "Now Playing",
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          decoration: TextDecoration.none,
+                          fontSize: 18,
+                          fontFamily: 'ConcertOne-Regular',
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.2,
+                          color: Colors.black.withOpacity(
+                              mainPageTextEntryAnimationController.value),
+                        ),
+                      );
+                    },
+                  ),
+                  Expanded(
+                    child: Container(
+                      margin: EdgeInsets.only(top: 10.0),
+                      child: Text(
+                        "View more >",
+                        textAlign: TextAlign.end,
+                        style: TextStyle(
+                          decoration: TextDecoration.none,
+                          fontSize: 14,
+                          fontFamily: 'ConcertOne-Regular',
+                          fontWeight: FontWeight.w100,
+                          color: Colors.white.withOpacity(0.0),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            tvShowNowPlayingList == null || tvShowNowPlayingList.length == 0
+                ? Container(
+                    height: 200,
+                    color: Colors.transparent,
+                    child: Center(
+                      child: LoadingBarIndicator(
+                        numberOfBars: 5,
+                        colors: _colors,
+                        barSpacing: 5.0,
+                        beginTweenValue: 10.0,
+                        endTweenValue: 15.0,
+                      ),
+                    ),
+                  )
+                : AnimatedBuilder(
+                    animation: listItemEntryAnimationController,
+                    builder: (context, widget) {
+                      return Opacity(
+                        opacity: listItemEntryAnimationController.value,
+                        child: Transform(
+                          transform: Matrix4.identity()
+                            ..setEntry(
+                                3,
+                                0,
+                                0.006 *
+                                    (1 -
+                                        listItemEntryAnimationController
+                                            .value)),
+                          child: Transform.translate(
+                            offset: Offset(
+                                screenWidth *
+                                    (1 -
+                                        listItemEntryAnimationController.value),
+                                0.0),
+                            child: Container(
+                              height: 260,
+                              color: Colors.white,
+                              child: PageStorage(
+                                bucket: storageBucket,
+                                child: PageView.builder(
+                                  key: PageStorageKey("index1_now_playing"),
+                                  controller: nowPlayingPageController,
+                                  scrollDirection: Axis.horizontal,
+                                  physics: BouncingScrollPhysics(),
+                                  onPageChanged: (index) {
+                                    nowPlayingListItemTextEntryAnimationController
+                                        .reset();
+                                    nowPlayingListItemTextEntryAnimationController
+                                        .forward();
+                                  },
+                                  itemBuilder: (context, index) {
+                                    if (index ==
+                                        nowPlayingCurrentPage.floor()) {
+                                      frontNowPlayingItemChangeAnimationController
+                                              .value =
+                                          (nowPlayingCurrentPage - index);
+
+                                      return Transform.scale(
+                                        scale:
+                                            frontNowPlayingListItemChangeAnimation
+                                                .value,
+                                        child: buildTvShowMainListItems(
+                                          tvShowNowPlayingList[index].id,
+                                          tvShowNowPlayingList[index]
+                                              .backdrop_path,
+                                          tvShowNowPlayingList[index].name,
+                                          tvShowNowPlayingList[index]
+                                              .first_air_date
+                                              .toString(),
+                                          tvShowNowPlayingList[index]
+                                              .vote_average,
+                                          tvShowNowPlayingList[index]
+                                              .vote_count,
+                                          nowPlayingListItemTextEntryAnimationController,
+                                        ),
+                                      );
+                                    } else if (index ==
+                                        nowPlayingCurrentPage.floor() + 1) {
+                                      backNowPlayingListItemChangeAnimationController
+                                              .value =
+                                          1 - (index - nowPlayingCurrentPage);
+
+                                      return Opacity(
+                                        opacity:
+                                            backNowPlayingListItemChangeAnimation
+                                                .value,
+                                        child: Transform.scale(
+                                          scale:
+                                              backNowPlayingListItemChangeAnimation
+                                                  .value,
+                                          child: buildTvShowMainListItems(
+                                            tvShowNowPlayingList[index].id,
+                                            tvShowNowPlayingList[index]
+                                                .backdrop_path,
+                                            tvShowNowPlayingList[index].name,
+                                            tvShowNowPlayingList[index]
+                                                .first_air_date
+                                                .toString(),
+                                            tvShowNowPlayingList[index]
+                                                .vote_average,
+                                            tvShowNowPlayingList[index]
+                                                .vote_count,
+                                            nowPlayingListItemTextEntryAnimationController,
+                                          ),
+                                        ),
+                                      );
+                                    } else {
+                                      return Transform.scale(
+                                        scale: 0.75,
+                                        child: buildTvShowMainListItems(
+                                          tvShowNowPlayingList[index].id,
+                                          tvShowNowPlayingList[index]
+                                              .backdrop_path,
+                                          tvShowNowPlayingList[index].name,
+                                          tvShowNowPlayingList[index]
+                                              .first_air_date
+                                              .toString(),
+                                          tvShowNowPlayingList[index]
+                                              .vote_average,
+                                          tvShowNowPlayingList[index]
+                                              .vote_count,
+                                          nowPlayingListItemTextEntryAnimationController,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  itemCount: tvShowNowPlayingList.length,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+          ],
+        ),
